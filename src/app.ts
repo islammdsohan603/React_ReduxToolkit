@@ -1,11 +1,17 @@
-var containDuplicate = function (nums: number[]): boolean {
-  let set = new Set();
+const products: {
+  id: number;
+  name: string;
+  price: number;
+  size: string;
+  orderCount: number;
+}[] = [
+  { id: 1, name: "T-shirt", price: 20, size: "M", orderCount: 100 },
+  { id: 2, name: "Jeans", price: 50, size: "L", orderCount: 200 },
+  { id: 3, name: "Sneakers", price: 80, size: "XL", orderCount: 150 },
+];
 
-  for (let i = 0; i < nums.length; i++) {
-    if (set.has(nums[i])) {
-      return true;
-    }
-    set.add(nums[i]);
-  }
-  return false;
-};
+const totalPrice = products.reduce((total, product) => {
+  return total + product.price;
+}, 0);
+
+console.log(totalPrice);
