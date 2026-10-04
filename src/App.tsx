@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 import { increment, decrement, reset } from "./redux/counterSlice.ts";
+import type { RootState } from "./redux/store.ts";
 
 function App() {
-  const value = useSelector((state) => state.counter.value);
+  const value = useSelector((state: RootState) => state.counter.value);
 
   const dispatch = useDispatch();
 
@@ -38,7 +39,7 @@ function App() {
           {/* Decrement Button */}
           <button
             type="button"
-            onClick={() => dispatch(decrement())}
+            onClick={() => dispatch(decrement(5))}
             className="flex items-center justify-center py-3.5 px-4 bg-slate-800/90 hover:bg-slate-700/80 active:scale-95 text-rose-400 text-xl font-bold rounded-xl border border-slate-700/60 transition-all duration-150 shadow-sm cursor-pointer select-none"
             aria-label="Decrease"
           >
@@ -48,7 +49,7 @@ function App() {
           {/* Increment Button */}
           <button
             type="button"
-            onClick={() => dispatch(increment())}
+            onClick={() => dispatch(increment(5))}
             className="flex items-center justify-center py-3.5 px-4 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xl font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-150 cursor-pointer select-none"
             aria-label="Increase"
           >
