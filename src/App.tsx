@@ -1,6 +1,12 @@
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
+import { increment, decrement, reset } from "./redux/counterSlice.ts";
 
 function App() {
+  const value = useSelector((state) => state.counter.value);
+
+  const dispatch = useDispatch();
+
   return (
     <main className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
       {/* Background Glow */}
@@ -23,7 +29,7 @@ function App() {
         {/* Counter Display Area */}
         <div className="w-full py-8 my-2 bg-slate-950/60 rounded-2xl border border-slate-800/80 flex items-center justify-center shadow-inner">
           <span className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-indigo-200 tracking-tight font-mono select-none">
-            0
+            {value}
           </span>
         </div>
 
@@ -32,6 +38,7 @@ function App() {
           {/* Decrement Button */}
           <button
             type="button"
+            onClick={() => dispatch(decrement())}
             className="flex items-center justify-center py-3.5 px-4 bg-slate-800/90 hover:bg-slate-700/80 active:scale-95 text-rose-400 text-xl font-bold rounded-xl border border-slate-700/60 transition-all duration-150 shadow-sm cursor-pointer select-none"
             aria-label="Decrease"
           >
@@ -41,6 +48,7 @@ function App() {
           {/* Increment Button */}
           <button
             type="button"
+            onClick={() => dispatch(increment())}
             className="flex items-center justify-center py-3.5 px-4 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xl font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-150 cursor-pointer select-none"
             aria-label="Increase"
           >
@@ -51,6 +59,7 @@ function App() {
         {/* Reset Button */}
         <button
           type="button"
+          onClick={() => dispatch(reset())}
           className="mt-3 cursor-pointer w-full py-4 text-xl font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-lg transition-colors  "
         >
           Reset Counter
