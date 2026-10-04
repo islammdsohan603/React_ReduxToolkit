@@ -1,10 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./App.css";
-import { increment, decrement, reset } from "./redux/counterSlice.ts";
-import type { RootState } from "./redux/store.ts";
+import {
+  increment,
+  decrement,
+  reset,
+  selectValue,
+} from "./redux/counterSlice.ts";
+
+import { useAppSelector } from "./redux/hooks.ts";
 
 function App() {
-  const value = useSelector((state: RootState) => state.counter.value);
+  const value = useAppSelector(selectValue);
 
   const dispatch = useDispatch();
 
