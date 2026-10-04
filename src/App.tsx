@@ -51,7 +51,7 @@ function App() {
         {/* Reset Button */}
         <button
           type="button"
-          className="mt-3 w-full py-2.5 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-lg transition-colors cursor-pointer"
+          className="mt-3 cursor-pointer w-full py-4 text-xl font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-lg transition-colors  "
         >
           Reset Counter
         </button>
