@@ -12,12 +12,12 @@ export const counterSlice = createSlice({
   name: "AppCounter",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    increment: (state, action) => {
+      state.value += action.payload;
     },
-    decrement: (state) => {
+    decrement: (state, action) => {
       if (state.value > 0) {
-        state.value -= 1;
+        state.value -= action.payload;
       }
     },
     reset: (state) => {
