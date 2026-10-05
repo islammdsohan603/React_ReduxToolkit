@@ -1,23 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface initialStateType {
+export interface CounterState {
   value: number;
 }
 
-const initialState: initialStateType = {
+const initialState: CounterState = {
   value: 0,
 };
 
 export const counterSlice = createSlice({
-  name: "counter",
+  name: "AppCounter",
   initialState,
   reducers: {
-    increment: (state, action: { payload: number }) => {
-      state.value += action.payload;
+    increment: (state) => {
+      state.value += 1;
     },
-    decrement: (state, action: { payload: number }) => {
+    decrement: (state) => {
       if (state.value > 0) {
-        state.value -= action.payload;
+        state.value -= 1;
       }
     },
     reset: (state) => {
@@ -25,8 +25,6 @@ export const counterSlice = createSlice({
     },
   },
 });
-
-export const selectValue = (state: RooteState) => state.counter.value;
 
 export const { increment, decrement, reset } = counterSlice.actions;
 
