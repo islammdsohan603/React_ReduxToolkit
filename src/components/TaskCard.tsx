@@ -7,20 +7,22 @@ import {
 } from 'react-icons/fi';
 import type { Todo } from '../types/todo';
 import { CATEGORY_STYLES, PRIORITY_STYLES } from '../types/todo';
+import { useAppDispatch } from '../redux/hooks';
+import { toggleTodo, deleteTodo, openEditTaskModal } from '../redux/todoSlice';
 
-interface TodoItemProps {
+interface TaskCardProps {
   todo: Todo;
-  onToggleComplete: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (todo: Todo) => void;
 }
 
-export const TodoItem: React.FC<TodoItemProps> = ({
-  todo,
-  onToggleComplete,
-  onDelete,
-  onEdit,
-}) => {
+/**
+ * TaskCard Component
+ * 
+ * Individual interactive task item. Features animated checkbox toggle,
+ * priority glow indicators, category badges, due date badges, tags,
+ * and quick action buttons (edit, complete, remove).
+ */
+export const TaskCard: React.FC<TaskCardProps> = ({ todo }) => {
+  const dispatch = useAppDispatch();
   const categoryStyle = CATEGORY_STYLES[todo.category];
   const priorityStyle = PRIORITY_STYLES[todo.priority];
 
@@ -37,7 +39,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           : 'border-white/10 bg-slate-900/70 shadow-lg hover:border-indigo-500/30 hover:bg-slate-900/90 hover:shadow-indigo-500/5 hover:-translate-y-0.5'
       }`}
     >
-      {/* Subtle indicator bar for urgent/high items */}
+      {/* Indicator border for urgent/high priority */}
       {!todo.completed && (todo.priority === 'urgent' || todo.priority === 'high') && (
         <div
           className={`absolute left-0 top-0 bottom-0 w-1 ${
@@ -46,15 +48,15 @@ export const TodoItem: React.FC<TodoItemProps> = ({
         />
       )}
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 sm:gap-4 p-3.5 sm:p-5">
         
         {/* Left Side: Checkbox & Content */}
-        <div className="flex items-start gap-3.5 flex-1 min-w-0">
+        <div className="flex items-start gap-3 sm:gap-3.5 flex-1 min-w-0">
           
           {/* Custom Animated Checkbox */}
           <button
             type="button"
-            onClick={() => onToggleComplete(todo.id)}
+            onClick={() => dispatch(toggleTodo(todo.id))}
             title={todo.completed ? "Mark as pending" : "Mark as completed"}
             className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-all duration-200 cursor-pointer ${
               todo.completed
@@ -68,12 +70,12 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           </button>
 
           {/* Title, Description & Metadata */}
-          <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
             
             {/* Title */}
             <div className="flex flex-wrap items-center gap-2">
               <h3
-                onClick={() => onToggleComplete(todo.id)}
+                onClick={() => dispatch(toggleTodo(todo.id))}
                 className={`text-sm sm:text-base font-semibold tracking-tight transition-all cursor-pointer ${
                   todo.completed
                     ? 'line-through text-slate-500 font-normal'
@@ -96,11 +98,11 @@ export const TodoItem: React.FC<TodoItemProps> = ({
             )}
 
             {/* Badges Row: Category, Priority, Due Date, Tags */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1">
               
               {/* Category Badge */}
               <span
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${categoryStyle.border} ${categoryStyle.bg} ${categoryStyle.text}`}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-[11px] font-semibold tracking-wide ${categoryStyle.border} ${categoryStyle.bg} ${categoryStyle.text}`}
               >
                 <span className={`h-1.5 w-1.5 rounded-full ${categoryStyle.dot}`} />
                 {todo.category}
@@ -108,7 +110,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
 
               {/* Priority Pill */}
               <span
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-0.5 text-[11px] font-semibold capitalize ${priorityStyle.border} ${priorityStyle.badge} ${priorityStyle.text}`}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-[11px] font-semibold capitalize ${priorityStyle.border} ${priorityStyle.badge} ${priorityStyle.text}`}
               >
                 <span className={`h-1.5 w-1.5 rounded-full ${priorityStyle.dot}`} />
                 {todo.priority}
@@ -116,7 +118,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
 
               {/* Due Date Indicator */}
               <span
-                className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[11px] font-medium ${
+                className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] sm:text-[11px] font-medium ${
                   isUrgent
                     ? 'border-red-500/30 bg-red-500/10 text-red-300'
                     : isToday
@@ -128,7 +130,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 <span>{todo.dueDate}</span>
               </span>
 
-              {/* Optional Tags */}
+              {/* Tags */}
               {todo.tags && todo.tags.length > 0 && (
                 <div className="hidden md:flex items-center gap-1">
                   {todo.tags.map((tag) => (
@@ -154,7 +156,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           {/* Quick Mark Complete Button */}
           <button
             type="button"
-            onClick={() => onToggleComplete(todo.id)}
+            onClick={() => dispatch(toggleTodo(todo.id))}
             title={todo.completed ? "Mark Incomplete" : "Mark Complete"}
             className={`flex h-8 w-8 items-center justify-center rounded-xl border border-white/5 transition-all cursor-pointer ${
               todo.completed
@@ -168,7 +170,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           {/* Edit Button */}
           <button
             type="button"
-            onClick={() => onEdit(todo)}
+            onClick={() => dispatch(openEditTaskModal(todo))}
             title="Edit Task Details"
             className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/5 bg-slate-800/60 text-slate-400 transition-all hover:bg-indigo-500/20 hover:text-indigo-300 hover:border-indigo-500/30 cursor-pointer"
           >
@@ -178,7 +180,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           {/* Delete Button */}
           <button
             type="button"
-            onClick={() => onDelete(todo.id)}
+            onClick={() => dispatch(deleteTodo(todo.id))}
             title="Delete Task"
             className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/5 bg-slate-800/60 text-slate-400 transition-all hover:bg-rose-500/20 hover:text-rose-300 hover:border-rose-500/30 cursor-pointer"
           >
@@ -192,4 +194,4 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   );
 };
 
-export default TodoItem;
+export default TaskCard;

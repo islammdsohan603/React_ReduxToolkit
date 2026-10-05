@@ -6,18 +6,21 @@ import {
   FiZap, 
   FiTrendingUp
 } from 'react-icons/fi';
-import type { TodoStatsData } from '../types/todo';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { selectTodoStats, openNewTaskModal } from '../redux/todoSlice';
 
-interface TodoHeaderProps {
-  stats: TodoStatsData;
-  onOpenNewTaskModal: () => void;
-}
+/**
+ * TaskDashboardHeader Component
+ * 
+ * Displays the top-level application branding, dynamic real-time date,
+ * overall task completion progress bar, quick counter chips, and the primary
+ * "New Task" modal trigger button.
+ */
+export const TaskDashboardHeader: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const stats = useAppSelector(selectTodoStats);
 
-export const TodoHeader: React.FC<TodoHeaderProps> = ({ 
-  stats, 
-  onOpenNewTaskModal 
-}) => {
-  // Current dynamic formatted date
+  // Dynamic formatted date
   const today = new Date();
   const dateFormatted = today.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -31,7 +34,7 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
     : 0;
 
   return (
-    <header className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-indigo-950/40 p-6 md:p-8 backdrop-blur-2xl shadow-2xl">
+    <header className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-indigo-950/40 p-5 sm:p-7 md:p-8 backdrop-blur-2xl shadow-2xl">
       {/* Ambient decorative glowing backdrops */}
       <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-indigo-500/15 blur-3xl animate-pulse-subtle" />
       <div className="pointer-events-none absolute -left-12 -bottom-12 h-56 w-56 rounded-full bg-purple-500/10 blur-3xl" />
@@ -49,7 +52,7 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
                   Zenith<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Task</span>
                 </h1>
                 <span className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-2.5 py-0.5 text-xs font-semibold text-indigo-300">
-                  PRO Studio
+                  Redux PRO
                 </span>
               </div>
               <p className="flex items-center gap-1.5 text-xs md:text-sm font-medium text-slate-400">
@@ -63,16 +66,16 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
         </div>
 
         {/* Right Side: Quick Stats summary & New Task CTA */}
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {/* Quick Counter Chips */}
-          <div className="flex items-center gap-2 rounded-2xl border border-white/5 bg-slate-800/40 p-2 backdrop-blur-md">
-            <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 px-3 py-1.5 border border-white/5">
+          <div className="flex items-center gap-2 rounded-2xl border border-white/5 bg-slate-800/40 p-1.5 sm:p-2 backdrop-blur-md">
+            <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 px-2.5 sm:px-3 py-1.5 border border-white/5">
               <span className="flex h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
               <span className="text-xs text-slate-400">Pending:</span>
               <span className="text-xs font-bold text-white">{stats.pending}</span>
             </div>
 
-            <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 px-3 py-1.5 border border-white/5">
+            <div className="flex items-center gap-2 rounded-xl bg-slate-900/60 px-2.5 sm:px-3 py-1.5 border border-white/5">
               <span className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
               <span className="text-xs text-slate-400">Done:</span>
               <span className="text-xs font-bold text-white">{stats.completed}</span>
@@ -86,10 +89,10 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
             )}
           </div>
 
-          {/* New Task Button */}
+          {/* New Task Trigger Button */}
           <button
-            onClick={onOpenNewTaskModal}
-            className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 px-5 py-3 text-sm font-semibold text-white shadow-xl shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            onClick={() => dispatch(openNewTaskModal())}
+            className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-xl shadow-indigo-500/25 transition-all duration-300 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <FiPlus className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90 text-white" />
@@ -101,8 +104,8 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
         </div>
       </div>
 
-      {/* Bottom Progress Bar & Motivational Quote */}
-      <div className="relative mt-7 pt-5 border-t border-white/5">
+      {/* Bottom Progress Bar & Motivational Insight */}
+      <div className="relative mt-6 sm:mt-7 pt-4 sm:pt-5 border-t border-white/5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
           <div className="flex items-center gap-2 text-xs md:text-sm text-slate-300 font-medium">
             <FiTrendingUp className="text-emerald-400 h-4 w-4" />
@@ -137,4 +140,4 @@ export const TodoHeader: React.FC<TodoHeaderProps> = ({
   );
 };
 
-export default TodoHeader;
+export default TaskDashboardHeader;

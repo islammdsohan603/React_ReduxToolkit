@@ -7,24 +7,29 @@ import {
   FiTrendingUp,
   FiPlus
 } from 'react-icons/fi';
-import type { Todo, Category } from '../types/todo';
+import type { Category } from '../types/todo';
 import { CATEGORY_STYLES } from '../types/todo';
-
-interface TodoInsightsProps {
-  todos: Todo[];
-  onSelectCategory: (category: Category | 'all') => void;
-  selectedCategory: Category | 'all';
-  onOpenNewTaskModal: () => void;
-}
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { 
+  selectTodos, 
+  selectSelectedCategory, 
+  setSelectedCategory, 
+  openNewTaskModal 
+} from '../redux/todoSlice';
 
 const ALL_CATEGORIES: Category[] = ['Work', 'Design', 'Development', 'Personal', 'Health', 'Finance'];
 
-export const TodoInsights: React.FC<TodoInsightsProps> = ({
-  todos,
-  onSelectCategory,
-  selectedCategory,
-  onOpenNewTaskModal,
-}) => {
+/**
+ * TaskInsightsPanel Component
+ * 
+ * Side panel providing productivity metrics, critical priority spotlight,
+ * and category distribution analytics.
+ */
+export const TaskInsightsPanel: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector(selectTodos);
+  const selectedCategory = useAppSelector(selectSelectedCategory);
+
   const total = todos.length;
   const completed = todos.filter((t) => t.completed).length;
   const urgentTasks = todos.filter((t) => !t.completed && t.priority === 'urgent');
@@ -46,9 +51,9 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
   }).filter((item) => item.count > 0);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* 1. Urgent Focus Spotlight Card */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-indigo-950/40 p-5 backdrop-blur-2xl shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-indigo-950/40 p-4 sm:p-5 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center justify-between pb-3 border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="flex h-2.5 w-2.5 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)] animate-pulse" />
@@ -111,7 +116,7 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
         </div>
 
         <button
-          onClick={onOpenNewTaskModal}
+          onClick={() => dispatch(openNewTaskModal())}
           className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/10 bg-slate-800/40 py-2 text-xs font-semibold text-slate-300 hover:border-indigo-500/40 hover:bg-slate-800/80 hover:text-white transition-all cursor-pointer"
         >
           <FiPlus className="h-3.5 w-3.5 text-indigo-400" />
@@ -120,7 +125,7 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
       </div>
 
       {/* 2. Productivity Streak & Daily Target Widget */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-2xl shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-4 sm:p-5 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center justify-between pb-3 border-b border-white/5">
           <div className="flex items-center gap-2">
             <FiTrendingUp className="text-amber-400 h-4 w-4" />
@@ -141,8 +146,8 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
             <p className="text-xs text-slate-400">Daily Completion Goal</p>
           </div>
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-indigo-400 shadow-inner">
-            <FiArrowUpRight className="h-6 w-6" />
+          <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-indigo-400 shadow-inner">
+            <FiArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
         </div>
 
@@ -153,7 +158,7 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
       </div>
 
       {/* 3. Category Distribution breakdown */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-2xl shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-4 sm:p-5 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center justify-between pb-3 border-b border-white/5">
           <div className="flex items-center gap-2">
             <FiPieChart className="text-indigo-400 h-4 w-4" />
@@ -162,7 +167,7 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
             </h3>
           </div>
           <button
-            onClick={() => onSelectCategory('all')}
+            onClick={() => dispatch(setSelectedCategory('all'))}
             className={`text-[10px] font-semibold transition-colors cursor-pointer ${
               selectedCategory === 'all'
                 ? 'text-indigo-400'
@@ -173,13 +178,13 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
           </button>
         </div>
 
-        <div className="mt-3.5 space-y-3">
+        <div className="mt-3.5 space-y-2.5 sm:space-y-3">
           {categoryCounts.map((item) => {
             const isSelected = selectedCategory === item.category;
             return (
               <div
                 key={item.category}
-                onClick={() => onSelectCategory(item.category)}
+                onClick={() => dispatch(setSelectedCategory(item.category))}
                 className={`group rounded-xl p-2 transition-all cursor-pointer border ${
                   isSelected
                     ? 'border-indigo-500/40 bg-indigo-500/10'
@@ -213,4 +218,4 @@ export const TodoInsights: React.FC<TodoInsightsProps> = ({
   );
 };
 
-export default TodoInsights;
+export default TaskInsightsPanel;

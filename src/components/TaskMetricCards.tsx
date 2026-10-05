@@ -5,13 +5,18 @@ import {
   FiAlertTriangle, 
   FiTarget
 } from 'react-icons/fi';
-import type { TodoStatsData } from '../types/todo';
+import { useAppSelector } from '../redux/hooks';
+import { selectTodoStats } from '../redux/todoSlice';
 
-interface TodoStatsProps {
-  stats: TodoStatsData;
-}
+/**
+ * TaskMetricCards Component
+ * 
+ * Renders 4 high-level metric cards: Total Tasks, In Progress Tasks,
+ * Completed Tasks percentage, and Immediate Attention / Critical priority count.
+ */
+export const TaskMetricCards: React.FC = () => {
+  const stats = useAppSelector(selectTodoStats);
 
-export const TodoStats: React.FC<TodoStatsProps> = ({ stats }) => {
   const cards = [
     {
       label: 'Total Tasks',
@@ -54,7 +59,7 @@ export const TodoStats: React.FC<TodoStatsProps> = ({ stats }) => {
         return (
           <div
             key={idx}
-            className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 p-3 sm:p-4 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-slate-900/80 hover:-translate-y-1 shadow-lg ${card.glow}`}
+            className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 p-3.5 sm:p-4 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-slate-900/80 hover:-translate-y-1 shadow-lg ${card.glow}`}
           >
             <div className="flex items-center justify-between gap-1">
               <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -83,4 +88,4 @@ export const TodoStats: React.FC<TodoStatsProps> = ({ stats }) => {
   );
 };
 
-export default TodoStats;
+export default TaskMetricCards;
